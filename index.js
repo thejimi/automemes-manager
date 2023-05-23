@@ -17,6 +17,16 @@ function attachIsImage(msgAttach) {
     return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
 }
 
+const isValidUrl = urlString=> {
+    var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
+  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
+  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
+  '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+return !!urlPattern.test(urlString);
+}
+
 //Handle NSFW detection once posted in 📜┆vote-on-memes
 //Only works for images rn, plan for the future:
 //- use a different api that could scan a video/gif. It's possible to do that with our current system, but its too slow and memory consuming.
@@ -34,11 +44,15 @@ client.on('messageCreate', async (message) => {
                         .setColor("GREEN")
                         .setDescription(`[Your meme's URL - it might get removed by Discord soon!](${message.attachments.first()?.url})`)
     
-                        message.author.send({embeds:[embed], content:`> The meme that you submitted has been classified as \`${scan.tag}\` with probability \`${scan.probability}\`\n \n**Are we wrong?** Our machines are new and the AI is still learning, please ask a moderator to upload the meme for you.`})
+                        var author = await client.users.fetch(message.embeds[0].author.url.replace('https://discord.com/users/', ''))
+
+                        author.send({embeds:[embed], content:`> The meme that you submitted has been classified as \`${scan.tag}\` with probability \`${scan.probability}\`\n \n**Are we wrong?** Our machines are new and the AI is still learning, please ask a moderator to upload the meme for you.`})
                         return message.delete()
                     }
                 } catch (err) {
-
+                    //do nothing
+                    //its kinda stupid i put it here but it will break then
+                    console.log("nvm")
                 }
             }
         }

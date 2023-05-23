@@ -1,5 +1,5 @@
 # AutoMemes Manager
-## Discord bot that manages the meme feed of automemes, handles advertisments and lets moderators delete memes from the feed.
+Discord bot that manages the meme feed of automemes, handles advertisments and lets moderators delete memes from the feed.
 
 # Run
 To run the bot locally you will to create following files:

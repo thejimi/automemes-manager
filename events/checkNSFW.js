@@ -66,6 +66,9 @@ async function classify(imageURL, sendMoreInfo) {
 }
 
 async function example(){
+    //this is an example which i dont recommend using
+    //it uses results.ClassifiedAs which is usually too strict.
+
     let nsfw_image_example = 'https://cdn.discordapp.com/attachments/1110565852622889112/1110591785920643092/56a3648e-accd-4a78-9482-a3c9d29b36d7-profile_image-300x300.png' //example porn image
     let results = await classify(nsfw_image_example, true)
     
@@ -76,4 +79,21 @@ async function example(){
     }
 }
 
-example()
+async function check(frameURL){
+    //main function, please use this in particular.
+    //checks only a FRAME - static image, no video/gif allowed.
+
+    let results = await classify(frameURL, true)
+
+    console.clear() //clears all the garbage kernel logs
+    
+    if(results.ClassifiedAs === "Normal"){
+        return { isNsfw:false, probability:results.Probability }
+    } else if(results.ClassifiedAs === "NSFW"){
+        if(results.Probability < 0.98){ //sometimes the ai might be wrong, lets select only pics that are definitely nsfw
+            return { isNsfw:false, probability:results.Probability }
+        } else {
+            return { isNsfw:false, probability:results.Probability, tag:results.WinnerTag }
+        }
+    }
+}

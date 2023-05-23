@@ -1,14 +1,14 @@
 const Discord = require('discord.js')
-const allIntents = new Discord.Intents(7796);
-const client = new Discord.Client({ intents: allIntents });
+const { Client, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const { token } = require('./config.json')
 
 client.on("ready", function(){
     console.log(`the client becomes ready to start`);
 });
 
-client.on('messageCreate', (message) => {
-    console.log("test")
+client.on('messageCreate', async (message) => {
+
 })
 
 client.login(token)

@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "discord.js": "^13.16.0"
+    "deepai": "^1.0.21",
+    "discord.js": "^13.16.0",
+    "nsfwjs": "^2.4.2"
   }
 }

@@ -28,10 +28,17 @@ client.on('messageCreate', async (message) => {
                 const Image_CheckNSFW = require('./events/Image_checkNSFW')
                 const scan = await Image_CheckNSFW.check(message.attachments.first()?.url)
                 console.log(scan)
-                if(scan.isNsfw === true){
-                    return message.reply({content:`Thats fucking porn - ${scan.tag}`})
-                } else {
-                    return message.reply({content:`you good - ${scan.probability}`})
+                try {
+                    if(scan.isNsfw === true){
+                        const embed = new Discord.MessageEmbed()
+                        .setColor("GREEN")
+                        .setDescription(`[Your meme's URL - it might get removed by Discord soon!](${message.attachments.first()?.url})`)
+    
+                        message.author.send({embeds:[embed], content:`> The meme that you submitted has been classified as \`${scan.tag}\` with probability \`${scan.probability}\`\n \n**Are we wrong?** Our machines are new and the AI is still learning, please ask a moderator to upload the meme for you.`})
+                        return message.delete()
+                    }
+                } catch (err) {
+
                 }
             }
         }

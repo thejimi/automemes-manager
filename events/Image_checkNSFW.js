@@ -1,15 +1,15 @@
 const axios = require('axios')
-const tf = require('@tensorflow/tfjs-node')
+const tf = require('@tensorflow/tfjs-node') //must be 4.1.0 - new versions will not work
 const nsfw = require('nsfwjs')
 
-class DestroyPornError {
+class DestroyPornError { //this shit was used for the npm module i made, its not used rn
     name = 'DestroyPorn_Error';
     constructor(message){
         this.message = message;
     }
 }
 
-async function getPredictions(imageURL) {
+async function getPredictions(imageURL) { //predicts the result
     const model = await nsfw.load()
 
     let pic = await axios.get(`${imageURL}`, {
@@ -24,7 +24,7 @@ async function getPredictions(imageURL) {
 }
 
 async function classify(imageURL, sendMoreInfo) {
-    if(sendMoreInfo === true){
+    if(sendMoreInfo === true){ //pls use this option
         let predictions = await getPredictions(imageURL)
         if(predictions[0].className === 'Neutral'){
             let returnit = {
@@ -49,7 +49,7 @@ async function classify(imageURL, sendMoreInfo) {
 
             return returnit;
         }
-    } else if(sendMoreInfo === false){
+    } else if(sendMoreInfo === false){ //this option is highy not recommended, as its not accurate
         let predictions = await getPredictions(imageURL)
 
         if(predictions[0].className === 'Neutral'){
@@ -87,13 +87,17 @@ async function check(frameURL){
 
     console.clear() //clears all the garbage kernel logs
     
-    if(results.ClassifiedAs === "Normal"){
+    console.log(results)
+
+    if(results.ClassifiedAs === "Neutral"){
         return { isNsfw:false, probability:results.Probability }
     } else if(results.ClassifiedAs === "NSFW"){
-        if(results.Probability < 0.98){ //sometimes the ai might be wrong, lets select only pics that are definitely nsfw
+        if(results.Probability < 0.80){ //sometimes the ai might be wrong, lets select only pics that are definitely nsfw
             return { isNsfw:false, probability:results.Probability }
         } else {
-            return { isNsfw:false, probability:results.Probability, tag:results.WinnerTag }
+            return { isNsfw:true, probability:results.Probability, tag:results.WinnerTag }
         }
     }
 }
+
+module.exports = {check}

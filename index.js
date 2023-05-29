@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const { token } = require('./config.json')
+const https = require('https');
 const ids = require('./discord-ids.json');
 
 //Events import
@@ -54,6 +55,29 @@ client.on('messageCreate', async (message) => {
                     //its kinda stupid i put it here but it will break then
                     console.log("nvm")
                 }
+            }
+        }
+    }
+    if (message.channel.id === ids.posts) {
+        const url = message.embeds[0].fields[0].value
+        
+        for (channel_id of ids.video_channels) {
+            const channel = await client.channels.fetch(channel_id)
+            const messages = await channel.messages.fetch({ limit: 10 })
+            const lastHour = messages.filter(m => m.createdTimestamp > Date.now() - 3600000)
+            if (lastHour.size < 10) {
+                https.get(url, function(res) {
+                    var data = [];
+                    res.on('data', function(chunk) {
+                        data.push(chunk);
+                    }).on('end', async function() {
+                        var buffer = Buffer.concat(data);
+                        messagetopub = await channel.send({ files: [{attachment: buffer, name: `AutoMemes.${url.split('.').at(-1)}`}]});
+                        await messagetopub.crosspost();
+                        console.log(`Posted meme`)
+                    });
+                });
+                break
             }
         }
     }

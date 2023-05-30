@@ -58,6 +58,8 @@ client.on('messageCreate', async (message) => {
             }
         }
     }
+
+    //Post memes to announcement channels
     if (message.channel.id === ids.posts) {
         const url = message.embeds[0].fields[0].value
         

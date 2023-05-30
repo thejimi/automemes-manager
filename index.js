@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, EmbedBuilder } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const { token } = require('./config.json')
 const https = require('https');
@@ -72,7 +72,14 @@ client.on('messageCreate', async (message) => {
                         data.push(chunk);
                     }).on('end', async function() {
                         var buffer = Buffer.concat(data);
-                        messagetopub = await channel.send({ files: [{attachment: buffer, name: `AutoMemes.${url.split('.').at(-1)}`}]});
+                        messagetopub = await channel.send({ embeds: [
+                            new Discord.MessageEmbed()
+                                .setColor("2b2d31")
+                                //.setAuthor({ name: message.embeds[0].fields[2].value, iconURL: message.embeds[0].fields[3].value, url: `https://discord.com/users/${message.embeds[0].fields[1].value}` })
+                                //.setDescription(`${message.embeds[0].fields[4].value} • Uploaded by [${message.embeds[0].fields[2].value}](https://discord.com/users/${message.embeds[0].fields[1].value})`)
+                                //.setDescription(`**${message.embeds[0].fields[4].value}**\n[Download](${message.embeds[0].fields[0].value}) • [AutoMemes](https://discord.com/api/oauth2/authorize?client_id=1009473107335061544&permissions=533113203776&scope=applications.commands%20bot) • [Meme World](https://discord.gg/eC5TUKVtPT)`)
+                                .setDescription(`**${message.embeds[0].fields[4].value}**\n[Download/Share](${message.embeds[0].fields[0].value}) • Uploaded by [${message.embeds[0].fields[2].value}](https://discord.com/users/${message.embeds[0].fields[1].value})`)
+                        ], files: [{attachment: buffer, name: `AutoMemes.${url.split('.').at(-1)}`}]});
                         await messagetopub.crosspost();
                         console.log(`Posted meme`)
                     });

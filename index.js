@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const { token } = require('./config.json')
+const { token, self } = require('./config.json')
 const https = require('https');
 const ids = require('./discord-ids.json');
 
@@ -9,7 +9,7 @@ const ids = require('./discord-ids.json');
 //const { handle } = require('./events/checkNSFW')
 
 client.on("ready", function(){
-    console.log(`hi`);
+    console.log(`AutoManager is ready!`);
 });
 
 function attachIsImage(msgAttach) {
@@ -85,4 +85,41 @@ client.on('messageCreate', async (message) => {
     }
 })
 
+//Memes Gaining Begin (warning: this uses a selfbot account, which is against Discord ToS)
+const Discord2 = require('discord.js-selfbot-v13');
+const selfbot = new Discord2.Client({
+    checkUpdate:false
+});
+
+selfbot.on('ready', async () => {
+  console.log(`Self account - memes scraping - is ready!`);
+})
+
+selfbot.on('message', async (msg) => {
+    if(msg.channel.id === ids.thirdpartymemes){
+        var channel = selfbot.channels.cache.get(ids.scraped)
+        var url = msg.content
+        channel.send({content:`${url}`})
+    }
+})
+
+client.on('messageCreate', async (message) => {
+    if(message.author.id === client.user.id) return;
+    if(message.channel.id === ids.scraped){
+        var channel = client.channels.cache.get('1113162925696356493')
+        var embed = new Discord2.MessageEmbed()
+        .addFields(
+            {name: `url`, value:`${message.content || "null"}`},
+            {name: `uploader`, value:`1009473107335061544`},
+            {name: `uploader_name`, value:`AutoMemes`},
+            {name: `caption`, value:`No Caption`},
+            {name: `yes_votes`, value:`Placeholder`},
+            {name: `no_votes`, value:`Placeholder`}
+        )
+        channel.send({embeds:[embed]})
+    }
+})
+
+
 client.login(token)
+selfbot.login(self);

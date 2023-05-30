@@ -18,6 +18,10 @@ function attachIsImage(msgAttach) {
     return url.indexOf("png", url.length - "png".length /*or 3*/) !== -1;
 }
 
+function isAllowedFormat(url) {
+    return /\.(jpg|jpeg|png|webp|avif|gif|svg|mov|mp4|avi)$/.test(url);
+}
+
 const isValidUrl = urlString=> {
     var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
   '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
@@ -85,7 +89,7 @@ client.on('messageCreate', async (message) => {
     }
 })
 
-//Memes Gaining Begin (warning: this uses a selfbot account, which is against Discord ToS)
+//Memes Scraping Begin (warning: this uses a selfbot account, which is against Discord ToS)
 const Discord2 = require('discord.js-selfbot-v13');
 const selfbot = new Discord2.Client({
     checkUpdate:false
@@ -95,18 +99,34 @@ selfbot.on('ready', async () => {
   console.log(`Self account - memes scraping - is ready!`);
 })
 
-selfbot.on('message', async (msg) => {
+selfbot.on('messageCreate', async (msg) => {
     if(msg.channel.id === ids.thirdpartymemes){
         var channel = selfbot.channels.cache.get(ids.scraped)
-        var url = msg.content
-        channel.send({content:`${url}`})
+
+        if (msg.attachments.size > 0) {
+            var url = msg.attachments.first()?.url
+
+            if(!isAllowedFormat(url)){
+                return;
+            }
+
+            return channel.send({content:`${url}`})
+        } else if(isValidUrl(msg.content)){
+            var url = msg.content
+
+            if(!isAllowedFormat(url)){
+                return;
+            }
+
+            return channel.send({content:`${url}`})
+        }
     }
 })
 
 client.on('messageCreate', async (message) => {
     if(message.author.id === client.user.id) return;
     if(message.channel.id === ids.scraped){
-        var channel = client.channels.cache.get('1113162925696356493')
+        var channel = client.channels.cache.get(ids.posts)
         var embed = new Discord2.MessageEmbed()
         .addFields(
             {name: `url`, value:`${message.content || "null"}`},

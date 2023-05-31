@@ -89,19 +89,10 @@ client.on('messageCreate', async (message) => {
     }
 })
 
-//Memes Scraping Begin (warning: this uses a selfbot account, which is against Discord ToS)
-const Discord2 = require('discord.js-selfbot-v13');
-const selfbot = new Discord2.Client({
-    checkUpdate:false
-});
-
-selfbot.on('ready', async () => {
-  console.log(`Self account - memes scraping - is ready!`);
-})
-
-selfbot.on('messageCreate', async (msg) => {
-    if(msg.channel.id === ids.thirdpartymemes){
-        var channel = selfbot.channels.cache.get(ids.scraped)
+//Memes Scraping Begin
+client.on('messageCreate', async (msg) => {
+    if(ids.thirdpartychannels.includes(msg.channel.id)){//havent tested this
+        var channel = client.channels.cache.get(ids.scraped)
 
         if (msg.attachments.size > 0) {
             var url = msg.attachments.first()?.url
@@ -140,6 +131,4 @@ client.on('messageCreate', async (message) => {
     }
 })
 
-
 client.login(token)
-selfbot.login(self);

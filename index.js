@@ -54,7 +54,7 @@ client.on('messageCreate', async (message) => {
     
                         var author = await client.users.fetch(message.embeds[0].author.url.replace('https://discord.com/users/', ''))
 
-                        author.send({embeds:[embed], content:`> The meme that you submitted has been classified as \`${scan.tag}\` with probability \`${scan.probability}\`\n \n**Are we wrong?** Our machines are new and the AI is still learning, please ask a moderator to upload the meme for you.`})
+                        author.send({embeds:[embed], content:`> The meme that you submitted has been flagged as NSFW and classified with category \`${scan.tag}\`\n \n**Are we wrong?** Our machines are new and the AI is still learning, please ask a moderator to upload the meme for you.`})
                         return message.delete()
                     }
                 } catch (err) {

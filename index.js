@@ -75,7 +75,7 @@ client.on('messageCreate', async (message) => {
                         messagetopub = await channel.send({ embeds: [
                             new Discord.MessageEmbed()
                                 .setColor("2b2d31")
-                                //.setAuthor({ name: message.embeds[0].fields[2].value, iconURL: message.embeds[0].fields[3].value, url: `https://discord.com/users/${message.embeds[0].fields[1].value}` })
+                                .setAuthor({ name: "AutoMemes", iconURL: "https://cdn.discordapp.com/avatars/1009473107335061544/502ea7f2d245049bbffcd002bd1db626.webp?size=80", url: `https://discord.com/api/oauth2/authorize?client_id=1009473107335061544&permissions=533113203776&scope=applications.commands%20bot` })
                                 //.setDescription(`${message.embeds[0].fields[4].value} • Uploaded by [${message.embeds[0].fields[2].value}](https://discord.com/users/${message.embeds[0].fields[1].value})`)
                                 //.setDescription(`**${message.embeds[0].fields[4].value}**\n[Download](${message.embeds[0].fields[0].value}) • [AutoMemes](https://discord.com/api/oauth2/authorize?client_id=1009473107335061544&permissions=533113203776&scope=applications.commands%20bot) • [Meme World](https://discord.gg/eC5TUKVtPT)`)
                                 .setDescription(`**${message.embeds[0].fields[4].value}**\n[Download/Share](${message.embeds[0].fields[0].value}) • Uploaded by [${message.embeds[0].fields[2].value}](https://discord.com/users/${message.embeds[0].fields[1].value})`)

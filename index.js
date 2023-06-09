@@ -34,6 +34,13 @@ return !!urlPattern.test(urlString);
 client.on('messageCreate', async (message) => {
     if(message.author.id === client.user.id) return;
     if(message.channel.id === ids.voteonmemes){
+        if(message.member.roles.cache.has(ids.roles.support)) return;
+        if(message.member.roles.cache.has(ids.roles.meme_feed_moderator)) return;
+        if(message.member.roles.cache.has(ids.roles.trial_mod)) return;
+        if(message.member.roles.cache.has(ids.roles.moderator)) return;
+        if(message.member.roles.cache.has(ids.roles.admin)) return;
+        if(message.member.roles.cache.has(ids.roles.owner)) return;
+
         if (message.attachments.size > 0) {
             if (message.attachments.every(attachIsImage)){
                 const Image_CheckNSFW = require('./events/Image_checkNSFW')

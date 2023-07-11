@@ -65,6 +65,34 @@ client.on('messageCreate', async (message) => {
             }
         }
     }
+    if (message.channel.id === ids.scraped_memes) {
+        const url = message.content
+        
+        for (channel_id of ids.video_channels) {
+            const channel = await client.channels.fetch(channel_id)
+            const messages = await channel.messages.fetch({ limit: 10 })
+            const lastHour = messages.filter(m => m.createdTimestamp > Date.now() - 3600000)
+            if (lastHour.size < 10) {
+                https.get(url, function(res) {
+                    var data = [];
+                    res.on('data', function(chunk) {
+                        data.push(chunk);
+                    }).on('end', async function() {
+                        var buffer = Buffer.concat(data);
+                        messagetopub = await channel.send({ embeds: [
+                            new Discord.MessageEmbed()
+                                .setColor("2b2d31")
+                                .setAuthor({ name: "AutoMemes", iconURL: "https://cdn.discordapp.com/avatars/1009473107335061544/502ea7f2d245049bbffcd002bd1db626.webp?size=80", url: `https://discord.com/api/oauth2/authorize?client_id=1009473107335061544&permissions=533113203776&scope=applications.commands%20bot` })
+                                .setDescription(`[Download/Share](${url}?scraped)`)
+                        ], files: [{attachment: buffer, name: `AutoMemes.${url.split('.').at(-1)}`}]});
+                        await messagetopub.crosspost();
+                        console.log(`Posted meme`)
+                    });
+                });
+                break
+            }
+        }
+    }
     if (message.channel.id === ids.posts) {
         const url = message.embeds[0].fields[0].value
         
@@ -83,8 +111,6 @@ client.on('messageCreate', async (message) => {
                             new Discord.MessageEmbed()
                                 .setColor("2b2d31")
                                 .setAuthor({ name: "AutoMemes", iconURL: "https://cdn.discordapp.com/avatars/1009473107335061544/502ea7f2d245049bbffcd002bd1db626.webp?size=80", url: `https://discord.com/api/oauth2/authorize?client_id=1009473107335061544&permissions=533113203776&scope=applications.commands%20bot` })
-                                //.setDescription(`${message.embeds[0].fields[4].value} • Uploaded by [${message.embeds[0].fields[2].value}](https://discord.com/users/${message.embeds[0].fields[1].value})`)
-                                //.setDescription(`**${message.embeds[0].fields[4].value}**\n[Download](${message.embeds[0].fields[0].value}) • [AutoMemes](https://discord.com/api/oauth2/authorize?client_id=1009473107335061544&permissions=533113203776&scope=applications.commands%20bot) • [Meme World](https://discord.gg/eC5TUKVtPT)`)
                                 .setDescription(`**${message.embeds[0].fields[4].value}**\n[Download/Share](${message.embeds[0].fields[0].value}) • Uploaded by [${message.embeds[0].fields[2].value}](https://discord.com/users/${message.embeds[0].fields[1].value}?${message.id})`)
                         ], files: [{attachment: buffer, name: `AutoMemes.${url.split('.').at(-1)}`}]});
                         await messagetopub.crosspost();
